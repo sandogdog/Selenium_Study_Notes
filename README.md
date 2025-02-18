@@ -113,3 +113,101 @@ List<WebElement> elements = driver.findElements(By.className("elementClass"));
 - **`By.tagName`**：通过标签名称定位。
 
 使用适当的定位策略是 Selenium 自动化脚本中非常重要的一部分，选择最合适的定位方式可以提高测试脚本的稳定性和执行速度。
+
+---
+
+### 2. 描述一个你使用 Selenium 自动化测试的复杂场景。  
+明白了！既然是微信小程序而非浏览器，自动化测试的重点就不在浏览器层面的UI测试，而是在功能验证、接口测试和业务逻辑验证上。结合你在项目中使用 **Selenium** 和 **Postman** 进行的工作经验，我们可以从接口测试和功能测试的角度来举例，以下是一个 **Selenium 自动化测试复杂场景** 的实例。
+
+---
+
+### **场景描述：**
+
+在我参与的 **食派校园** 项目中，虽然核心业务是基于小程序进行的，但后台系统和前端界面是基于Web技术开发的。因此，除了小程序本身的手动测试外，我还主要负责后台管理系统的自动化功能测试。后台管理系统涉及到订单管理、员工管理、餐品管理等多个模块，这些模块都需要通过 Web 页面进行交互。
+
+---
+
+### **复杂场景和挑战：**
+
+1. **后台管理系统的自动化测试**：
+   餐饮管理系统的后台模块功能比较复杂，包括订单管理、餐品管理、员工管理等。每个模块的页面都需要多次验证，手动测试的工作量非常大。为了提高测试效率，我使用 **Selenium WebDriver** 来自动化测试后台管理系统的功能。
+
+2. **登录认证和权限控制的验证**：
+   后台管理系统的一个重要部分是登录和权限控制。管理员需要登录系统后才能进行各类操作。通过 Selenium，我编写了自动化脚本来模拟管理员登录，检查权限控制是否有效，确保不同角色的用户只能访问允许的功能。以下是一个示例，演示了自动化脚本如何进行登录和权限验证：
+   ```java
+   // 定位登录页面的输入框和按钮
+   WebElement usernameField = driver.findElement(By.id("username"));
+   WebElement passwordField = driver.findElement(By.id("password"));
+   WebElement loginButton = driver.findElement(By.id("loginButton"));
+
+   // 输入用户名和密码并提交
+   usernameField.sendKeys("admin");
+   passwordField.sendKeys("admin123");
+   loginButton.click();
+
+   // 验证登录成功后的页面内容
+   WebElement dashboard = driver.findElement(By.id("dashboard"));
+   assertTrue(dashboard.isDisplayed());
+   ```
+
+3. **功能模块的自动化验证**：
+   例如，在餐品管理模块中，管理员可以新增、编辑、删除餐品。每个操作都需要在界面中进行多次验证。通过 Selenium，我自动化了这些操作，并验证每次操作后系统是否按预期更新了页面和数据。比如，在新增餐品时，我会验证餐品列表中是否正确显示了新添加的餐品：
+   ```java
+   // 新增餐品操作
+   WebElement addProductButton = driver.findElement(By.id("addProduct"));
+   addProductButton.click();
+
+   WebElement productNameField = driver.findElement(By.id("productName"));
+   productNameField.sendKeys("Test Dish");
+
+   WebElement saveButton = driver.findElement(By.id("saveButton"));
+   saveButton.click();
+
+   // 验证新增餐品是否成功显示
+   WebElement productList = driver.findElement(By.id("productList"));
+   assertTrue(productList.getText().contains("Test Dish"));
+   ```
+
+4. **订单管理的自动化验证**：
+   在订单管理模块中，管理员需要查看订单详情、更新订单状态等。通过 Selenium，我自动化了订单状态的更新和订单列表的验证。例如，模拟管理员将订单状态从“未处理”更新为“已处理”，然后检查页面是否反映了这一变化：
+   ```java
+   // 选择一个订单并更新状态
+   WebElement orderStatusDropdown = driver.findElement(By.id("orderStatus"));
+   orderStatusDropdown.click();
+   WebElement newStatus = driver.findElement(By.xpath("//option[@value='processed']"));
+   newStatus.click();
+
+   WebElement updateButton = driver.findElement(By.id("updateButton"));
+   updateButton.click();
+
+   // 验证订单状态更新是否成功
+   WebElement statusText = driver.findElement(By.id("orderStatusText"));
+   assertEquals(statusText.getText(), "Processed");
+   ```
+
+5. **接口测试与功能联动**：
+   除了功能测试外，我还结合 **Postman** 进行接口测试。比如，在系统中，用户提交订单时，会向后端发送一个 API 请求。在提交订单后，我会使用 Postman 测试接口，确保订单数据被正确提交，返回的响应信息也符合预期：
+   ```bash
+   POST https://api.foodorder.com/orders
+   Content-Type: application/json
+   {
+       "userId": 123,
+       "productId": 456,
+       "quantity": 2
+   }
+   ```
+   我会检查返回的状态码、响应时间和数据正确性，确保订单信息在后端正确存储。
+
+---
+
+### **解决方案与最终结果：**
+
+通过这些自动化测试，我帮助团队提高了测试效率和准确性。自动化脚本不仅覆盖了大量的功能模块，还确保了每次操作后数据的一致性和系统的稳定性。尤其是后台管理系统的权限控制和订单管理部分，自动化测试显著减少了手动测试的时间和出错率。
+
+同时，结合接口测试与功能测试，我确保了前后端的数据流动是正确的，从而提升了整个系统的质量。
+
+---
+
+### **总结：**
+
+在该项目中，我使用 Selenium WebDriver 完成了后台管理系统的自动化功能测试，并结合 Postman 完成了接口测试。通过自动化脚本，我能够快速执行回归测试，验证每个功能模块的正确性，提升了项目的整体质量和交付效率。
